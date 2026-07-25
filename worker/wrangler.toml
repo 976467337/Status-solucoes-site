@@ -1,0 +1,7 @@
+name = "status-depoimentos"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[[kv_namespaces]]
+binding = "TESTIMONIALS"
+id = "639df725bfb242dc8c85fbe6281449b1"

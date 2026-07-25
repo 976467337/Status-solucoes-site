@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Status Soluções Integradas | Elétrica, Reformas e Energia Solar em São Paulo</title>
 <meta name="description" content="Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo. Orçamento sem compromisso pelo WhatsApp.">
+<link rel="canonical" href="https://976467337.github.io/Status-solucoes-site/">
 <link rel="icon" type="image/png" href="images/logo.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://976467337.github.io/Status-solucoes-site/">
 <meta property="og:title" content="Status Soluções Integradas | Elétrica, Reformas e Energia Solar em São Paulo">
 <meta property="og:description" content="Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo. Orçamento sem compromisso pelo WhatsApp.">
 <meta property="og:image" content="images/logo.png">
@@ -19,6 +21,42 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Work+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Status Soluções Integradas",
+  "founder": "Anderson José dos Santos",
+  "foundingDate": "2015",
+  "description": "Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo.",
+  "url": "https://976467337.github.io/Status-solucoes-site/",
+  "logo": "https://976467337.github.io/Status-solucoes-site/images/logo.png",
+  "image": "https://976467337.github.io/Status-solucoes-site/images/logo.png",
+  "telephone": "+5511938019756",
+  "areaServed": {
+    "@type": "City",
+    "name": "Grande São Paulo"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "SP",
+    "addressCountry": "BR"
+  },
+  "sameAs": [
+    "https://www.facebook.com/Status-Solu%C3%A7%C3%B5es-Integradas-104485018200755"
+  ]
+}
+</script>
+
+<!-- Google Analytics (GA4): substitua G-XXXXXXXXXX pelo seu Measurement ID real antes de publicar -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
 <style>
   :root{
     --bg: #12161A;
@@ -28,8 +66,9 @@
     --text: #EDEFF1;
     --muted: #93A1AB;
     --volt: #2F8FE0;
-    --volt-dim: #1B4A6E;
-    --wire: #3E7CB1;
+    --volt-dim: #4A7DA8;
+    --wire: #6FA8D9;
+    --neon: #4FE3D0;
     --danger-stripe: repeating-linear-gradient(135deg, var(--volt) 0 10px, #1B2126 10px 20px);
   }
 
@@ -43,6 +82,44 @@
     font-family: 'Work Sans', 'Segoe UI', sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ---------- skip link ---------- */
+  .skip-link{
+    position: absolute; left: -999px; top: auto;
+    background: var(--volt); color:#F5FAFF; padding: 12px 20px;
+    z-index: 200; border-radius: 0 0 4px 0; font-weight: 700;
+  }
+  .skip-link:focus{ left: 0; top: 0; }
+
+  /* ---------- particle network (per section) ---------- */
+  .particle-net{ position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:0.55; pointer-events:none; }
+
+  /* ---------- HUD corner frame ---------- */
+  .hud-frame{ position: relative; }
+  .hud-frame::after{
+    content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+    opacity: 0; transition: opacity .25s ease;
+    background:
+      linear-gradient(var(--neon), var(--neon)) top left,
+      linear-gradient(var(--neon), var(--neon)) top left,
+      linear-gradient(var(--neon), var(--neon)) top right,
+      linear-gradient(var(--neon), var(--neon)) top right,
+      linear-gradient(var(--neon), var(--neon)) bottom left,
+      linear-gradient(var(--neon), var(--neon)) bottom left,
+      linear-gradient(var(--neon), var(--neon)) bottom right,
+      linear-gradient(var(--neon), var(--neon)) bottom right;
+    background-repeat: no-repeat;
+    background-size: 18px 2px, 2px 18px;
+  }
+  .hud-frame.always::after, .hud-frame:hover::after{ opacity: 0.85; }
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{ opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in-view{ opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
   }
 
   h1,h2,h3,h4{
@@ -59,7 +136,7 @@
 
   img{ max-width: 100%; display:block; }
 
-  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .wrap{ position:relative; z-index:1; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
 
   /* ---------- header ---------- */
   header{
@@ -135,17 +212,34 @@
     border-bottom: 1px solid var(--line);
   }
   .hero-grid{
+    position: relative; z-index: 1;
     display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items:center;
     max-width: 1180px; margin: 0 auto;
   }
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
-    color: var(--volt); font-family:'IBM Plex Mono', monospace; font-size: 0.78rem;
+    color: var(--neon); font-family:'IBM Plex Mono', monospace; font-size: 0.78rem;
     letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 18px;
   }
-  .eyebrow::before{ content:"⚡"; }
+  .eyebrow::before{
+    content:""; width:7px; height:7px; border-radius:50%; background: var(--neon);
+    box-shadow: 0 0 8px 2px var(--neon); animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%, 100%{ opacity: 1; transform: scale(1); }
+    50%{ opacity: .45; transform: scale(0.8); }
+  }
+  @media (prefers-reduced-motion: reduce){ .eyebrow::before{ animation:none; } }
   .hero h1{ font-size: clamp(2.6rem, 6vw, 4.4rem); margin-bottom: 20px; }
-  .hero h1 span{ color: var(--volt); }
+  .hero h1 span{
+    background: linear-gradient(100deg, var(--volt), var(--neon) 60%, var(--volt));
+    background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 5s linear infinite;
+    filter: drop-shadow(0 0 18px rgba(79,227,208,0.35));
+  }
+  @keyframes shine{ to{ background-position: -200% center; } }
+  @media (prefers-reduced-motion: reduce){ .hero h1 span{ animation:none; } }
   .hero p.lead{ color: var(--muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 32px; font-family: 'Work Sans', sans-serif; text-transform:none; }
   .cta-row{ display:flex; gap: 16px; flex-wrap: wrap; }
   .btn{
@@ -153,11 +247,21 @@
     padding: 15px 28px; font-weight: 700; font-size: 0.95rem;
     letter-spacing: 0.03em; text-transform: uppercase; border-radius: 2px;
     transition: transform .15s ease, background .2s ease;
+    border: none; cursor: pointer; font-family: inherit;
   }
-  .btn-primary{ background: var(--volt); color:#F5FAFF; }
+  .btn-primary{
+    background: var(--volt); color:#F5FAFF;
+    box-shadow: 0 0 0 0 rgba(79,227,208,0.55);
+    animation: btn-glow 2.6s ease-in-out infinite;
+  }
   .btn-primary:hover{ background:#57A8EE; transform: translateY(-2px); }
-  .btn-ghost{ border: 1px solid var(--line); color: var(--text); }
-  .btn-ghost:hover{ border-color: var(--wire); color: var(--wire); }
+  @keyframes btn-glow{
+    0%, 100%{ box-shadow: 0 0 0 0 rgba(79,227,208,0.35); }
+    50%{ box-shadow: 0 0 22px 2px rgba(79,227,208,0.35); }
+  }
+  @media (prefers-reduced-motion: reduce){ .btn-primary{ animation:none; } }
+  .btn-ghost{ background: transparent; border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--neon); color: var(--neon); box-shadow: 0 0 14px rgba(79,227,208,0.25); }
 
   .hero-stats{ display:flex; gap: 32px; margin-top: 46px; flex-wrap:wrap; }
   .stat b{ display:block; font-family:'IBM Plex Mono',monospace; font-size: 1.7rem; color: var(--volt); }
@@ -182,7 +286,7 @@
   }
 
   /* ---------- section shell ---------- */
-  section{ padding: 90px 0; }
+  section{ position: relative; padding: 90px 0; }
   .section-head{ max-width: 640px; margin-bottom: 52px; }
   .section-head .eyebrow{ margin-bottom: 12px; }
   .section-head h2{ font-size: clamp(2rem, 4vw, 2.8rem); }
@@ -256,6 +360,7 @@
     display:grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px;
   }
   .service-card{
+    position: relative;
     background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
     padding: 26px; transition: border-color .2s ease, transform .2s ease;
     display:flex; flex-direction:column; gap: 12px;
@@ -292,6 +397,34 @@
     transform: translateY(6px); opacity: 0.92;
   }
 
+  /* ---------- testimonials ---------- */
+  .testimonial-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px;
+  }
+  .testimonial-grid:not(:empty){ margin-bottom: 40px; }
+  .testimonial-card{
+    position: relative;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+    padding: 26px; display:flex; flex-direction:column; gap: 12px;
+  }
+  .testimonial-card .stars{ color: var(--neon); letter-spacing: 0.1em; font-size: 1rem; }
+  .testimonial-card .quote{
+    color: var(--text); font-style: italic; text-transform:none; font-family:'Work Sans',sans-serif;
+    font-size: 0.95rem;
+  }
+  .testimonial-card .author{
+    color: var(--muted); font-family:'IBM Plex Mono',monospace; font-size: 0.8rem; text-transform: uppercase;
+  }
+  .testimonial-cta{ text-align: center; }
+  .testimonial-form-wrap{ max-width: 560px; margin: 28px auto 0; }
+  .form-thanks{
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 32px; text-align: center;
+  }
+  .form-thanks p{
+    color: var(--text); text-transform:none; font-family:'Work Sans',sans-serif; font-size: 1rem;
+  }
+
   /* ---------- process ---------- */
   #processo{ background: var(--surface); border-bottom:1px solid var(--line); border-top:1px solid var(--line); }
   .process-row{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px; counter-reset: step; }
@@ -309,7 +442,8 @@
   /* ---------- contact ---------- */
   .contact-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
   .contact-card{
-    background: linear-gradient(135deg, rgba(242,183,5,0.09), transparent 60%), var(--surface);
+    position: relative;
+    background: linear-gradient(135deg, rgba(79,227,208,0.09), transparent 60%), var(--surface);
     border:1px solid var(--line); border-radius: 6px; padding: 36px;
   }
   .contact-card h3{ font-size: 1.5rem; margin-bottom: 12px; }
@@ -359,13 +493,16 @@
 </head>
 <body>
 
+<a href="#topo" class="skip-link">Pular para o conteúdo</a>
+
 <header>
   <div class="nav">
-    <a href="#topo" class="brand"><img src="images/logo.png" alt="Status Soluções Integradas" class="logo-img"></a>
+    <a href="#topo" class="brand"><img src="images/logo.png" width="600" height="222" alt="Status Soluções Integradas" class="logo-img"></a>
     <nav class="navlinks">
       <a href="#sobre">Sobre</a>
       <a href="#servicos">Serviços</a>
       <a href="#portfolio">Portfólio</a>
+      <a href="#depoimentos">Depoimentos</a>
       <a href="#processo">Como funciona</a>
       <a href="#contato">Contato</a>
     </nav>
@@ -379,6 +516,7 @@
   <a href="#sobre">Sobre</a>
   <a href="#servicos">Serviços</a>
   <a href="#portfolio">Portfólio</a>
+  <a href="#depoimentos">Depoimentos</a>
   <a href="#processo">Como funciona</a>
   <a href="#contato">Contato</a>
 </div>
@@ -386,6 +524,7 @@
 <main id="topo">
 
   <section class="hero">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="hero-grid">
       <div>
         <span class="eyebrow">Grande São Paulo · desde 2015</span>
@@ -401,7 +540,7 @@
           <div class="stat"><b>100%</b><span>equipe brasileira</span></div>
         </div>
       </div>
-      <div class="hero-panel">
+      <div class="hero-panel hud-frame always">
         <svg class="hero-illustration" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustração de instalação de energia solar">
           <defs>
             <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
@@ -528,12 +667,13 @@
   <div class="wire-divider"></div>
 
   <section id="sobre">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="wrap about-grid">
       <div class="about-col">
         <span class="eyebrow">Quem somos</span>
         <h2>Uma empresa,<br>todas as frentes da obra</h2>
         <div class="about-visual">
-          <img src="images/logo-mark.png" alt="Ícone Status Soluções Integradas" loading="lazy">
+          <img src="images/logo-mark.png" width="194" height="222" alt="Ícone Status Soluções Integradas" loading="lazy">
         </div>
       </div>
       <div>
@@ -554,6 +694,7 @@
   <div class="wire-divider"></div>
 
   <section id="servicos">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">O que fazemos</span>
@@ -561,136 +702,136 @@
         <p>Filtre por área para encontrar rápido o que você precisa. Qualquer dúvida, é só chamar no WhatsApp.</p>
       </div>
 
-      <div class="service-tabs" id="tabs">
-        <button class="tab active" data-filter="all">Todos</button>
-        <button class="tab" data-filter="eletrica">Elétrica</button>
-        <button class="tab" data-filter="solar">Energia solar</button>
-        <button class="tab" data-filter="predial">Predial / comercial</button>
-        <button class="tab" data-filter="reforma">Reforma e acabamento</button>
+      <div class="service-tabs" id="tabs" role="group" aria-label="Filtrar serviços por área">
+        <button class="tab active" data-filter="all" aria-pressed="true">Todos</button>
+        <button class="tab" data-filter="eletrica" aria-pressed="false">Elétrica</button>
+        <button class="tab" data-filter="solar" aria-pressed="false">Energia solar</button>
+        <button class="tab" data-filter="predial" aria-pressed="false">Predial / comercial</button>
+        <button class="tab" data-filter="reforma" aria-pressed="false">Reforma e acabamento</button>
       </div>
 
       <div class="services-grid" id="grid">
 
-        <article class="service-card" data-cat="solar">
+        <article class="service-card hud-frame" data-cat="solar">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
           <span class="tag">Fotovoltaico</span>
           <h3>Energia solar</h3>
           <p>Projeto, instalação e configuração de sistemas fotovoltaicos. Retorno do investimento em até 5 anos e vida útil de 25+ anos.</p>
         </article>
 
-        <article class="service-card" data-cat="solar">
+        <article class="service-card hud-frame" data-cat="solar">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="13" height="14" rx="2"/><path d="M7 3h5v4H7z"/><path d="M16 11h2l2 3v4h-4"/><circle cx="8" cy="21" r="1.5"/><circle cx="17" cy="21" r="1.5"/><path d="M9 13l-1.5 3h3L9 19"/></svg>
           <span class="tag">Mobilidade elétrica</span>
           <h3>Carregadores para veículos elétricos</h3>
           <p>Instalação de carregadores rápidos (EV chargers) em comércios, condomínios e empresas, com todo o dimensionamento elétrico necessário.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
           <span class="tag">Projetos</span>
           <h3>Projetos e manutenção elétrica</h3>
           <p>Instalações residenciais, comerciais e industriais, com equipes de manutenção corretiva e preventiva.</p>
         </article>
 
-        <article class="service-card" data-cat="predial">
+        <article class="service-card hud-frame" data-cat="predial">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 7h2M8 11h2M8 15h2M14 7h2M14 11h2M14 15h2"/></svg>
           <span class="tag">Shopping / varejo</span>
           <h3>Elétrica de shoppings e restaurantes</h3>
           <p>Contrato de manutenção sob medida para lojas, joalherias e restaurantes em shoppings de toda a Grande São Paulo.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
           <span class="tag">Devolução de imóvel</span>
           <h3>Reestruturação predial</h3>
           <p>Reforma completa de andares corporativos para devolução do imóvel conforme projeto original.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20h16M6 20V10l6-4 6 4v10M9 20v-5h6v5"/></svg>
           <span class="tag">Feiras e eventos</span>
           <h3>Stands e financeiras</h3>
           <p>Montagem completa com eletricista, marceneiro, pintor, serralheiro e vidraceiro na mesma equipe.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="12" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           <span class="tag">Lojas e escritórios</span>
           <h3>Elétrica comercial</h3>
           <p>Substituição de cabeamento, tomadas e iluminação interna e externa da sua loja ou escritório.</p>
         </article>
 
-        <article class="service-card" data-cat="predial">
+        <article class="service-card hud-frame" data-cat="predial">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V8l8-5 8 5v13M9 21v-8h6v8"/></svg>
           <span class="tag">Edifícios</span>
           <h3>Elétrica predial</h3>
           <p>Equipe habilitada para elaboração e execução de projetos elétricos em edifícios.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20"/></svg>
           <span class="tag">Alta complexidade</span>
           <h3>Elétrica industrial</h3>
           <p>Instalações elétricas industriais de alta complexidade, com profissionais experientes e habilitados.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21V13a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v8"/><path d="M4 21V11l8-6 8 6v10"/></svg>
           <span class="tag">Casa e apartamento</span>
           <h3>Elétrica residencial</h3>
           <p>Da simples troca de um chuveiro à reestruturação completa do cabeamento da sua residência.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2"/></svg>
           <span class="tag">Ambientes</span>
           <h3>Instalação de iluminação</h3>
           <p>Anos de experiência em instalação de iluminação residencial, comercial e industrial, com garantia de qualidade.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M4.9 4.9l3.5 3.5M19.1 4.9l-3.5 3.5M4.9 19.1l3.5-3.5M19.1 19.1l-3.5-3.5"/></svg>
           <span class="tag">Reparos</span>
           <h3>Cabeamento e conserto de soquetes</h3>
           <p>Passagem, manutenção de cabos e conserto de soquetes com material e mão de obra inclusos.</p>
         </article>
 
-        <article class="service-card" data-cat="eletrica">
+        <article class="service-card hud-frame" data-cat="eletrica">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="3" width="10" height="18" rx="1"/><path d="M11 7h2M11 11h2M11 15h2"/></svg>
           <span class="tag">Segurança</span>
           <h3>Painel do disjuntor</h3>
           <p>Instalação, manutenção e conserto de painéis de disjuntor, com material e serviço completos.</p>
         </article>
 
-        <article class="service-card" data-cat="predial">
+        <article class="service-card hud-frame" data-cat="predial">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/><path d="M10 8h4M10 16h4"/></svg>
           <span class="tag">Redes e dados</span>
           <h3>Cabeamento estruturado</h3>
           <p>Projeto e implementação de cabeamento para transmissão de dados, voz, imagem e multimídia.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3l7 7-9 9H5v-7z"/><path d="M14 3l-3 3"/></svg>
           <span class="tag">Marcenaria</span>
           <h3>Marcenaria e serralheria</h3>
           <p>Confecção e montagem de móveis sob medida com marceneiros e serralheiros experientes.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21l6-2 9-9-4-4-9 9-2 6z"/></svg>
           <span class="tag">Alvenaria</span>
           <h3>Serviços de pedreiro</h3>
           <p>Equipe de pedreiros experientes para qualquer projeto, em casas, prédios ou empresas.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 12h16M12 4v16"/></svg>
           <span class="tag">Vidros</span>
           <h3>Serviços de vidraceiro</h3>
           <p>Instalação de vidros e janelas com a experiência necessária para o seu projeto.</p>
         </article>
 
-        <article class="service-card" data-cat="reforma">
+        <article class="service-card hud-frame" data-cat="reforma">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21c2-1 3-3 3-5 0-3-2-4-2-7a5 5 0 0 1 10 0c0 3-2 4-2 7 0 2 1 4 3 5"/></svg>
           <span class="tag">Acabamento</span>
           <h3>Serviços de pintura</h3>
@@ -704,6 +845,7 @@
   <div class="wire-divider"></div>
 
   <section id="portfolio">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Trabalhos entregues</span>
@@ -711,84 +853,84 @@
         <p>Uma amostra real de obras e instalações executadas pela nossa equipe pelo Brasil afora. Filtre por área para ver de perto.</p>
       </div>
 
-      <div class="service-tabs" id="portTabs">
-        <button class="tab active" data-filter="all">Todos</button>
-        <button class="tab" data-filter="solar">Energia solar</button>
-        <button class="tab" data-filter="residencial">Residencial</button>
-        <button class="tab" data-filter="comercial">Comercial</button>
-        <button class="tab" data-filter="predial">Predial</button>
-        <button class="tab" data-filter="industrial">Industrial</button>
-        <button class="tab" data-filter="epi">EPI</button>
+      <div class="service-tabs" id="portTabs" role="group" aria-label="Filtrar portfólio por área">
+        <button class="tab active" data-filter="all" aria-pressed="true">Todos</button>
+        <button class="tab" data-filter="solar" aria-pressed="false">Energia solar</button>
+        <button class="tab" data-filter="residencial" aria-pressed="false">Residencial</button>
+        <button class="tab" data-filter="comercial" aria-pressed="false">Comercial</button>
+        <button class="tab" data-filter="predial" aria-pressed="false">Predial</button>
+        <button class="tab" data-filter="industrial" aria-pressed="false">Industrial</button>
+        <button class="tab" data-filter="epi" aria-pressed="false">EPI</button>
       </div>
 
       <div class="portfolio-grid" id="portGrid">
-        <figure class="port-card" data-cat="solar">
-          <img src="images/instalacao-fotovoltaica-residencial.jpg" alt="Instalação fotovoltaica residencial" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="solar">
+          <img src="images/instalacao-fotovoltaica-residencial.jpg" width="640" height="480" alt="Instalação fotovoltaica residencial" loading="lazy">
           <figcaption>Instalação fotovoltaica residencial</figcaption>
         </figure>
 
-        <figure class="port-card tall" data-cat="residencial">
-          <img src="images/iluminacao-decorativa-em-sala-de-jantar.jpg" alt="Iluminação decorativa em sala de jantar" loading="lazy">
+        <figure class="port-card tall hud-frame" data-cat="residencial">
+          <img src="images/iluminacao-decorativa-em-sala-de-jantar.jpg" width="640" height="807" alt="Iluminação decorativa em sala de jantar" loading="lazy">
           <figcaption>Iluminação decorativa em sala de jantar</figcaption>
         </figure>
 
-        <figure class="port-card tall" data-cat="residencial">
-          <img src="images/instalacao-de-lustre-com-vista-panoramica.jpg" alt="Instalação de lustre com vista panorâmica" loading="lazy">
+        <figure class="port-card tall hud-frame" data-cat="residencial">
+          <img src="images/instalacao-de-lustre-com-vista-panoramica.jpg" width="585" height="1040" alt="Instalação de lustre com vista panorâmica" loading="lazy">
           <figcaption>Instalação de lustre com vista panorâmica</figcaption>
         </figure>
 
-        <figure class="port-card tall" data-cat="comercial">
-          <img src="images/acabamento-eletrico-loja-em-shopping.jpg" alt="Acabamento elétrico — loja em shopping" loading="lazy">
+        <figure class="port-card tall hud-frame" data-cat="comercial">
+          <img src="images/acabamento-eletrico-loja-em-shopping.jpg" width="640" height="853" alt="Acabamento elétrico — loja em shopping" loading="lazy">
           <figcaption>Acabamento elétrico — loja em shopping</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="comercial">
-          <img src="images/iluminacao-em-trilho-loja-de-joias.jpg" alt="Iluminação em trilho — loja de joias" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="comercial">
+          <img src="images/iluminacao-em-trilho-loja-de-joias.jpg" width="640" height="480" alt="Iluminação em trilho — loja de joias" loading="lazy">
           <figcaption>Iluminação em trilho — loja de joias</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="comercial">
-          <img src="images/infraestrutura-eletrica-checkouts-de-loja.jpg" alt="Infraestrutura elétrica — checkouts de loja" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="comercial">
+          <img src="images/infraestrutura-eletrica-checkouts-de-loja.jpg" width="640" height="360" alt="Infraestrutura elétrica — checkouts de loja" loading="lazy">
           <figcaption>Infraestrutura elétrica — checkouts de loja</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="predial">
-          <img src="images/cabeamento-estruturado-andar-corporativo.jpg" alt="Cabeamento estruturado — andar corporativo" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="predial">
+          <img src="images/cabeamento-estruturado-andar-corporativo.jpg" width="640" height="360" alt="Cabeamento estruturado — andar corporativo" loading="lazy">
           <figcaption>Cabeamento estruturado — andar corporativo</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="predial">
-          <img src="images/reestruturacao-de-andar-comercial.jpg" alt="Reestruturação de andar comercial" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="predial">
+          <img src="images/reestruturacao-de-andar-comercial.jpg" width="640" height="360" alt="Reestruturação de andar comercial" loading="lazy">
           <figcaption>Reestruturação de andar comercial</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="comercial">
-          <img src="images/instalacao-de-iluminacao-pendente.jpg" alt="Instalação de iluminação pendente" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="comercial">
+          <img src="images/instalacao-de-iluminacao-pendente.jpg" width="640" height="481" alt="Instalação de iluminação pendente" loading="lazy">
           <figcaption>Instalação de iluminação pendente</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="predial">
-          <img src="images/quadro-de-distribuicao-eletrica.jpg" alt="Quadro de distribuição elétrica" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="predial">
+          <img src="images/quadro-de-distribuicao-eletrica.jpg" width="640" height="716" alt="Quadro de distribuição elétrica" loading="lazy">
           <figcaption>Quadro de distribuição elétrica</figcaption>
         </figure>
 
-        <figure class="port-card tall" data-cat="industrial">
-          <img src="images/painel-eletrico-industrial-de-alta-capacidade.jpg" alt="Painel elétrico industrial de alta capacidade" loading="lazy">
+        <figure class="port-card tall hud-frame" data-cat="industrial">
+          <img src="images/painel-eletrico-industrial-de-alta-capacidade.jpg" width="610" height="1116" alt="Painel elétrico industrial de alta capacidade" loading="lazy">
           <figcaption>Painel elétrico industrial de alta capacidade</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="epi">
-          <img src="images/equipe-em-campo-capacete-e-oculos-de-protecao.jpg" alt="Equipe em campo — capacete e óculos de proteção" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="epi">
+          <img src="images/equipe-em-campo-capacete-e-oculos-de-protecao.jpg" width="640" height="481" alt="Equipe em campo — capacete e óculos de proteção" loading="lazy">
           <figcaption>Equipe em campo — capacete e óculos de proteção</figcaption>
         </figure>
 
-        <figure class="port-card" data-cat="epi">
-          <img src="images/uniforme-capacetes-e-ferramentas-da-equipe-status.jpg" alt="Uniforme, capacetes e ferramentas da equipe Status" loading="lazy">
+        <figure class="port-card hud-frame" data-cat="epi">
+          <img src="images/uniforme-capacetes-e-ferramentas-da-equipe-status.jpg" width="640" height="638" alt="Uniforme, capacetes e ferramentas da equipe Status" loading="lazy">
           <figcaption>Uniforme, capacetes e ferramentas da equipe Status</figcaption>
         </figure>
 
-        <figure class="port-card tall" data-cat="solar">
-          <img src="images/carregador-veiculo-eletrico-estacao-rapida.jpg" alt="Estação rápida de recarga para veículos elétricos Kinsol CC 60kW" loading="lazy">
+        <figure class="port-card tall hud-frame" data-cat="solar">
+          <img src="images/carregador-veiculo-eletrico-estacao-rapida.jpg" width="720" height="1600" alt="Estação rápida de recarga para veículos elétricos Kinsol CC 60kW" loading="lazy">
           <figcaption>Estação rápida de recarga para veículos elétricos — 60kW</figcaption>
         </figure>
       </div>
@@ -797,7 +939,71 @@
 
   <div class="wire-divider"></div>
 
+  <section id="depoimentos">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">O que dizem</span>
+        <h2>Depoimentos</h2>
+        <p>Avaliações de clientes atendidos pela Status.</p>
+      </div>
+
+      <!-- Depoimentos aprovados: adicione aqui um <article class="testimonial-card hud-frame"> por depoimento real -->
+      <div class="testimonial-grid" id="testimonialGrid"></div>
+
+      <div class="testimonial-cta">
+        <button class="btn btn-ghost" id="showTestimonialFormBtn" type="button">Enviar seu depoimento</button>
+      </div>
+
+      <div class="testimonial-form-wrap hidden" id="testimonialFormWrap">
+        <form class="quote" id="testimonialForm" onsubmit="return sendTestimonialToWhatsApp(event)">
+          <label for="dep-nome">Nome</label>
+          <input type="text" id="dep-nome" placeholder="Seu nome" required>
+          <label for="dep-servico">Serviço contratado</label>
+          <select id="dep-servico">
+            <option>Energia solar</option>
+            <option>Carregadores para veículos elétricos</option>
+            <option>Projetos e manutenção elétrica</option>
+            <option>Elétrica de shoppings e restaurantes</option>
+            <option>Reestruturação predial</option>
+            <option>Stands e financeiras</option>
+            <option>Elétrica comercial</option>
+            <option>Elétrica predial</option>
+            <option>Elétrica industrial</option>
+            <option>Elétrica residencial</option>
+            <option>Instalação de iluminação</option>
+            <option>Cabeamento e conserto de soquetes</option>
+            <option>Painel do disjuntor</option>
+            <option>Cabeamento estruturado</option>
+            <option>Marcenaria e serralheria</option>
+            <option>Serviços de pedreiro</option>
+            <option>Serviços de vidraceiro</option>
+            <option>Serviços de pintura</option>
+            <option>Outro</option>
+          </select>
+          <label for="dep-nota">Sua avaliação</label>
+          <select id="dep-nota">
+            <option value="5">★★★★★ (5 de 5)</option>
+            <option value="4">★★★★☆ (4 de 5)</option>
+            <option value="3">★★★☆☆ (3 de 5)</option>
+            <option value="2">★★☆☆☆ (2 de 5)</option>
+            <option value="1">★☆☆☆☆ (1 de 5)</option>
+          </select>
+          <label for="dep-texto">Seu depoimento</label>
+          <textarea id="dep-texto" rows="3" placeholder="Conte como foi sua experiência com a Status" required></textarea>
+          <button class="btn btn-primary" type="submit" style="margin-top:6px;">Enviar depoimento para aprovação</button>
+        </form>
+        <div class="form-thanks hidden" id="depThanks">
+          <p>Obrigado pelo seu depoimento! Ele foi enviado para nossa equipe e será publicado aqui assim que for revisado e aprovado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wire-divider"></div>
+
   <section id="processo">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Como funciona</span>
@@ -815,6 +1021,7 @@
   <div class="wire-divider"></div>
 
   <section id="contato">
+    <canvas class="particle-net" aria-hidden="true"></canvas>
     <div class="wrap contact-grid">
       <div>
         <span class="eyebrow">Vamos conversar</span>
@@ -851,7 +1058,7 @@
         </form>
       </div>
 
-      <div class="contact-card">
+      <div class="contact-card hud-frame">
         <h3>Fale direto com a gente</h3>
         <p>Atendemos toda a Grande São Paulo. Chame no WhatsApp para respostas mais rápidas.</p>
 
@@ -878,7 +1085,7 @@
 <footer>
   <div class="wrap">
     <div class="foot-row">
-      <a href="#topo" class="brand" style="font-size:1rem;"><img src="images/logo.png" alt="Status Soluções Integradas" class="logo-img" style="height:72px;"></a>
+      <a href="#topo" class="brand" style="font-size:1rem;"><img src="images/logo.png" width="600" height="222" alt="Status Soluções Integradas" class="logo-img" style="height:72px;"></a>
       <div class="foot-links">
         <a href="#sobre">Sobre</a>
         <a href="#servicos">Serviços</a>
@@ -904,12 +1111,13 @@
   mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
 
   // service filter tabs
-  const tabs = document.querySelectorAll('.tab');
+  const tabs = document.querySelectorAll('#tabs .tab');
   const cards = document.querySelectorAll('.service-card');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
       tab.classList.add('active');
+      tab.setAttribute('aria-pressed', 'true');
       const filter = tab.dataset.filter;
       cards.forEach(card => {
         if (filter === 'all' || card.dataset.cat === filter) {
@@ -926,8 +1134,9 @@
   const portCards = document.querySelectorAll('.port-card');
   portTabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      portTabs.forEach(t => t.classList.remove('active'));
+      portTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
       tab.classList.add('active');
+      tab.setAttribute('aria-pressed', 'true');
       const filter = tab.dataset.filter;
       portCards.forEach(card => {
         if (filter === 'all' || card.dataset.cat === filter) {
@@ -947,9 +1156,187 @@
     const msg = document.getElementById('msg').value;
     const text = `Olá! Meu nome é ${nome}. Tenho interesse em: ${servico}. ${msg ? 'Detalhes: ' + msg : ''}`;
     const url = `https://api.whatsapp.com/send?phone=5511938019756&text=${encodeURIComponent(text)}`;
+    trackWhatsAppClick('form_orcamento');
     window.open(url, '_blank');
     return false;
   }
+
+  // send testimonial submission for approval — nothing publishes until the
+  // owner taps the one-tap approval link (generated by the Cloudflare Worker
+  // below) that arrives inside the WhatsApp message.
+  const TESTIMONIAL_SENT_KEY = 'status_depoimento_enviado';
+  const TESTIMONIAL_API = 'https://status-depoimentos.rieres.workers.dev';
+
+  function showTestimonialForm(){
+    document.getElementById('showTestimonialFormBtn').classList.add('hidden');
+    document.getElementById('testimonialFormWrap').classList.remove('hidden');
+  }
+
+  function showTestimonialThanks(){
+    document.getElementById('showTestimonialFormBtn').classList.add('hidden');
+    document.getElementById('testimonialFormWrap').classList.remove('hidden');
+    document.getElementById('testimonialForm').classList.add('hidden');
+    document.getElementById('depThanks').classList.remove('hidden');
+  }
+
+  document.getElementById('showTestimonialFormBtn').addEventListener('click', showTestimonialForm);
+
+  async function sendTestimonialToWhatsApp(e){
+    e.preventDefault();
+    const nome = document.getElementById('dep-nome').value;
+    const servico = document.getElementById('dep-servico').value;
+    const nota = document.getElementById('dep-nota').value;
+    const texto = document.getElementById('dep-texto').value;
+    const stars = '★'.repeat(Number(nota)) + '☆'.repeat(5 - Number(nota));
+
+    let approveUrl = '';
+    try {
+      const resp = await fetch(TESTIMONIAL_API + '/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, servico, nota, texto }),
+      });
+      const data = await resp.json();
+      approveUrl = data.approveUrl || '';
+    } catch (err) {
+      // if the approval service is unreachable, still send the WhatsApp
+      // message below so nothing is lost — just without the 1-tap link.
+    }
+
+    const linkLine = approveUrl ? `\n\n✅ Aprovar e publicar no site: ${approveUrl}` : '';
+    const text = `Novo depoimento para aprovação no site:\nNome: ${nome}\nServiço: ${servico}\nAvaliação: ${stars} (${nota}/5)\nDepoimento: ${texto}${linkLine}`;
+    const url = `https://api.whatsapp.com/send?phone=5511938019756&text=${encodeURIComponent(text)}`;
+    trackWhatsAppClick('depoimento_form');
+    window.open(url, '_blank');
+    try { localStorage.setItem(TESTIMONIAL_SENT_KEY, '1'); } catch (err) {}
+    showTestimonialThanks();
+    return false;
+  }
+
+  async function loadApprovedTestimonials(){
+    const grid = document.getElementById('testimonialGrid');
+    if (!grid) return;
+    try {
+      const resp = await fetch(TESTIMONIAL_API + '/approved');
+      const list = await resp.json();
+      grid.innerHTML = list.map(t => {
+        const div = document.createElement('div');
+        div.textContent = t.texto;
+        const safeQuote = div.innerHTML;
+        div.textContent = t.nome;
+        const safeNome = div.innerHTML;
+        div.textContent = t.servico || '';
+        const safeServico = div.innerHTML;
+        return `
+          <article class="testimonial-card hud-frame">
+            <div class="stars" aria-label="${t.nota} de 5 estrelas">${t.stars}</div>
+            <p class="quote">"${safeQuote}"</p>
+            <span class="author">— ${safeNome}${safeServico ? ' · ' + safeServico : ''}</span>
+          </article>
+        `;
+      }).join('');
+    } catch (err) {
+      // approval service unreachable — section just stays empty, no error shown to visitors
+    }
+  }
+  loadApprovedTestimonials();
+
+  (function checkTestimonialAlreadySent(){
+    let alreadySent = false;
+    try { alreadySent = localStorage.getItem(TESTIMONIAL_SENT_KEY) === '1'; } catch (err) {}
+    if (alreadySent) showTestimonialThanks();
+  })();
+
+  // ---------- WhatsApp click tracking (GA4) ----------
+  function trackWhatsAppClick(origem){
+    if (typeof gtag === 'function') {
+      gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: origem });
+    }
+  }
+  document.querySelectorAll('a[href*="whatsapp.com/send"]').forEach(link => {
+    link.addEventListener('click', () => trackWhatsAppClick(link.closest('[id]')?.id || link.className));
+  });
+
+  // ---------- reveal-on-scroll ----------
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReducedMotion) {
+    const revealTargets = document.querySelectorAll(
+      '.section-head, .service-card, .port-card, .step, .contact-card, .pillar, form.quote:not(#testimonialForm)'
+    );
+    revealTargets.forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i % 6) * 60 + 'ms';
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealTargets.forEach(el => io.observe(el));
+  }
+
+  // ---------- particle network (one instance per section) ----------
+  function initParticleNet(canvas){
+    if (!canvas || prefersReducedMotion) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr, points;
+
+    function resize(){
+      const rect = canvas.parentElement.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width; h = rect.height;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function seed(){
+      const count = Math.round((w * h) / 16000);
+      points = Array.from({ length: Math.min(count, 70) }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25
+      }));
+    }
+
+    function step(){
+      ctx.clearRect(0, 0, w, h);
+      for (const p of points) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      }
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const a = points[i], b = points[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 130) {
+            ctx.strokeStyle = `rgba(79,227,208,${0.22 * (1 - dist / 130)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      for (const p of points) {
+        ctx.fillStyle = 'rgba(111,209,232,0.7)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(step);
+    }
+
+    resize(); seed(); step();
+    window.addEventListener('resize', () => { resize(); seed(); });
+  }
+
+  document.querySelectorAll('canvas.particle-net').forEach(initParticleNet);
 </script>
 
 </body>
