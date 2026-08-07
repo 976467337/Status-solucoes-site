@@ -382,7 +382,7 @@
   }
   .port-card{
     position: relative; margin: 0; overflow: hidden; border-radius: 4px;
-    border: 1px solid var(--line); background: var(--surface);
+    border: 1px solid var(--line); background: var(--surface); cursor: pointer;
   }
   .port-card.tall{ grid-row: span 2; }
   .port-card img{
@@ -390,11 +390,54 @@
     transition: transform .4s ease;
   }
   .port-card:hover img{ transform: scale(1.06); }
+  .port-card .play-badge{
+    position: absolute; top:12px; right:12px; width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(10,13,16,0.75); border: 1px solid rgba(237,239,241,0.35);
+    display:flex; align-items:center; justify-content:center; pointer-events:none;
+  }
+  .port-card .play-badge svg{ width: 14px; height: 14px; fill: var(--text); }
   .port-card figcaption{
     position: absolute; left:0; right:0; bottom:0; padding: 14px 16px 12px;
     background: linear-gradient(0deg, rgba(10,13,16,0.92), rgba(10,13,16,0));
     color: var(--text); font-size: 0.85rem; font-family:'Work Sans',sans-serif;
     transform: translateY(6px); opacity: 0.92;
+  }
+  .portfolio-more{ text-align: center; margin-top: 30px; }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    display:none; position: fixed; inset: 0; z-index: 300;
+    background: rgba(9,11,14,0.96); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 60px 24px;
+  }
+  .lightbox.open{ display:flex; flex-direction: column; }
+  .lightbox-media{ max-width: 88vw; max-height: 78vh; display:flex; align-items:center; justify-content:center; }
+  .lightbox-media img, .lightbox-media video{
+    max-width: 88vw; max-height: 78vh; object-fit: contain; border-radius: 4px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .lightbox-caption{
+    color: var(--muted); font-family:'Work Sans',sans-serif; text-transform:none;
+    margin-top: 16px; text-align:center; font-size: 0.92rem;
+  }
+  .lightbox-close{
+    position: absolute; top: 20px; right: 24px; background:none; border:none;
+    color: var(--text); font-size: 2.2rem; line-height:1; cursor:pointer;
+  }
+  .lightbox-close:hover{ color: var(--neon); }
+  .lightbox-nav{
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(27,33,38,0.8); border: 1px solid var(--line); color: var(--text);
+    font-size: 2rem; width: 48px; height: 48px; border-radius: 50%; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .lightbox-nav:hover{ border-color: var(--neon); color: var(--neon); }
+  .lightbox-prev{ left: 16px; }
+  .lightbox-next{ right: 16px; }
+  @media (max-width: 640px){
+    .lightbox-nav{ width: 40px; height: 40px; font-size: 1.6rem; }
+    .lightbox-prev{ left: 6px; }
+    .lightbox-next{ right: 6px; }
   }
 
   /* ---------- testimonials ---------- */
@@ -933,8 +976,20 @@
           <figcaption>Estação rápida de recarga para veículos elétricos — 60kW</figcaption>
         </figure>
       </div>
+
+      <div class="portfolio-more">
+        <button class="btn btn-ghost hidden" id="portShowMoreBtn" type="button"></button>
+      </div>
     </div>
   </section>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">×</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Foto anterior">‹</button>
+    <div class="lightbox-media" id="lightboxMedia"></div>
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Próxima foto">›</button>
+  </div>
 
   <div class="wire-divider"></div>
 
@@ -1128,23 +1183,124 @@
     });
   });
 
-  // portfolio filter tabs
+  // portfolio filter tabs + "ver mais" pagination
+  const PORTFOLIO_PAGE_SIZE = 10;
   const portTabs = document.querySelectorAll('#portTabs .tab');
-  const portCards = document.querySelectorAll('.port-card');
+  const portShowMoreBtn = document.getElementById('portShowMoreBtn');
+  let portfolioExpanded = false;
+
+  function currentPortfolioFilter(){
+    return document.querySelector('#portTabs .tab.active')?.dataset.filter || 'all';
+  }
+
+  function applyPortfolioVisibility(){
+    const filter = currentPortfolioFilter();
+    const allCards = Array.from(document.querySelectorAll('.port-card'));
+    const matching = allCards.filter(c => filter === 'all' || c.dataset.cat === filter);
+    const nonMatching = allCards.filter(c => !matching.includes(c));
+
+    nonMatching.forEach(c => c.classList.add('hidden'));
+
+    matching.forEach((card, i) => {
+      const visible = portfolioExpanded || i < PORTFOLIO_PAGE_SIZE;
+      card.classList.toggle('hidden', !visible);
+      if (visible) card.classList.add('in-view'); // skip scroll-reveal for cards unhidden via JS
+    });
+
+    const hiddenCount = matching.length - PORTFOLIO_PAGE_SIZE;
+    if (!portShowMoreBtn) return;
+    if (!portfolioExpanded && hiddenCount > 0) {
+      portShowMoreBtn.textContent = `Ver mais ${hiddenCount} foto${hiddenCount > 1 ? 's' : ''}`;
+      portShowMoreBtn.classList.remove('hidden');
+    } else {
+      portShowMoreBtn.classList.add('hidden');
+    }
+  }
+
   portTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       portTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
       tab.classList.add('active');
       tab.setAttribute('aria-pressed', 'true');
-      const filter = tab.dataset.filter;
-      portCards.forEach(card => {
-        if (filter === 'all' || card.dataset.cat === filter) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
+      portfolioExpanded = false;
+      applyPortfolioVisibility();
     });
+  });
+
+  if (portShowMoreBtn) {
+    portShowMoreBtn.addEventListener('click', () => {
+      portfolioExpanded = true;
+      applyPortfolioVisibility();
+    });
+  }
+
+  applyPortfolioVisibility();
+
+  // ---------- portfolio lightbox ----------
+  const lightbox = document.getElementById('lightbox');
+  const lightboxMedia = document.getElementById('lightboxMedia');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  let lightboxItems = [];
+  let lightboxIndex = 0;
+
+  function visiblePortfolioCards(){
+    return Array.from(document.querySelectorAll('.port-card')).filter(c => !c.classList.contains('hidden'));
+  }
+
+  function renderLightbox(){
+    const item = lightboxItems[lightboxIndex];
+    if (!item) return;
+    lightboxMedia.innerHTML = '';
+    const video = item.querySelector('video');
+    if (video) {
+      const v = document.createElement('video');
+      v.src = video.currentSrc || video.src;
+      v.controls = true;
+      v.autoplay = true;
+      lightboxMedia.appendChild(v);
+    } else {
+      const img = item.querySelector('img');
+      const el = document.createElement('img');
+      el.src = img.src;
+      el.alt = img.alt || '';
+      lightboxMedia.appendChild(el);
+    }
+    lightboxCaption.textContent = item.querySelector('figcaption')?.textContent || '';
+  }
+
+  function openLightbox(card){
+    lightboxItems = visiblePortfolioCards();
+    lightboxIndex = lightboxItems.indexOf(card);
+    if (lightboxIndex < 0) lightboxIndex = 0;
+    renderLightbox();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightboxMedia.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  function stepLightbox(delta){
+    if (!lightboxItems.length) return;
+    lightboxIndex = (lightboxIndex + delta + lightboxItems.length) % lightboxItems.length;
+    renderLightbox();
+  }
+
+  document.querySelectorAll('.port-card').forEach(card => {
+    card.addEventListener('click', () => openLightbox(card));
+  });
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev').addEventListener('click', () => stepLightbox(-1));
+  document.getElementById('lightboxNext').addEventListener('click', () => stepLightbox(1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') stepLightbox(-1);
+    if (e.key === 'ArrowRight') stepLightbox(1);
   });
 
   // send quote form to WhatsApp
