@@ -45,7 +45,13 @@ function clip(str, max) {
 }
 
 const MAX_MEDIA_BYTES = 20 * 1024 * 1024; // 20MB per file
-const ALLOWED_CATEGORIES = ['solar', 'carregador', 'residencial', 'comercial', 'predial', 'industrial', 'epi'];
+const ALLOWED_CATEGORIES = [
+  'solar', 'carregador', 'projetos-manutencao', 'shoppings-restaurantes',
+  'reestruturacao-predial', 'stands-financeiras', 'comercial', 'predial',
+  'industrial', 'residencial', 'iluminacao', 'cabeamento-soquetes',
+  'disjuntor', 'cabeamento-estruturado', 'marcenaria', 'pedreiro',
+  'vidraceiro', 'pintura', 'epi', 'outro',
+];
 
 export default {
   async fetch(request, env) {
@@ -175,13 +181,16 @@ export default {
         });
       }
 
+      const width = Number(form.get('largura')) || null;
+      const height = Number(form.get('altura')) || null;
+
       const id = crypto.randomUUID();
       const bytes = await file.arrayBuffer();
       await env.PORTFOLIO_MEDIA.put(`media:${id}`, bytes, {
         metadata: { contentType },
       });
 
-      const item = { id, titulo, categoria, tipo, contentType, createdAt: Date.now() };
+      const item = { id, titulo, categoria, tipo, contentType, width, height, createdAt: Date.now() };
       const indexRaw = await env.PORTFOLIO_MEDIA.get('portfolio-items');
       const items = indexRaw ? JSON.parse(indexRaw) : [];
       items.unshift(item);
