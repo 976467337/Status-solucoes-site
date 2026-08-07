@@ -44,6 +44,9 @@ function clip(str, max) {
   return String(str || '').slice(0, max);
 }
 
+const MAX_MEDIA_BYTES = 20 * 1024 * 1024; // 20MB per file
+const ALLOWED_CATEGORIES = ['solar', 'carregador', 'residencial', 'comercial', 'predial', 'industrial', 'epi'];
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -121,7 +124,127 @@ export default {
       const approvedRaw = await env.TESTIMONIALS.get('approved');
       const approved = approvedRaw ? JSON.parse(approvedRaw) : [];
       return new Response(JSON.stringify(approved), {
-        headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'max-age=60' },
+        headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      });
+    }
+
+    // Owner uploads a new portfolio photo/video from admin.html
+    if (url.pathname === '/portfolio/upload' && request.method === 'POST') {
+      let form;
+      try {
+        form = await request.formData();
+      } catch (err) {
+        return new Response(JSON.stringify({ error: 'invalid_form' }), {
+          status: 400,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const password = String(form.get('password') || '');
+      if (!env.ADMIN_PASSWORD || password !== env.ADMIN_PASSWORD) {
+        return new Response(JSON.stringify({ error: 'unauthorized' }), {
+          status: 401,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const titulo = clip(form.get('titulo'), 120).trim();
+      const categoria = String(form.get('categoria') || '');
+      const file = form.get('arquivo');
+
+      if (!titulo || !ALLOWED_CATEGORIES.includes(categoria) || !file || typeof file === 'string') {
+        return new Response(JSON.stringify({ error: 'missing_fields' }), {
+          status: 400,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (file.size > MAX_MEDIA_BYTES) {
+        return new Response(JSON.stringify({ error: 'file_too_large', maxBytes: MAX_MEDIA_BYTES }), {
+          status: 413,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const contentType = file.type || 'application/octet-stream';
+      const tipo = contentType.startsWith('video/') ? 'video' : 'image';
+      if (!contentType.startsWith('image/') && !contentType.startsWith('video/')) {
+        return new Response(JSON.stringify({ error: 'unsupported_type' }), {
+          status: 400,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const id = crypto.randomUUID();
+      const bytes = await file.arrayBuffer();
+      await env.PORTFOLIO_MEDIA.put(`media:${id}`, bytes, {
+        metadata: { contentType },
+      });
+
+      const item = { id, titulo, categoria, tipo, contentType, createdAt: Date.now() };
+      const indexRaw = await env.PORTFOLIO_MEDIA.get('portfolio-items');
+      const items = indexRaw ? JSON.parse(indexRaw) : [];
+      items.unshift(item);
+      await env.PORTFOLIO_MEDIA.put('portfolio-items', JSON.stringify(items));
+
+      return new Response(JSON.stringify({ ok: true, item }), {
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Site fetches this on page load to render owner-uploaded portfolio items
+    if (url.pathname === '/portfolio/list' && request.method === 'GET') {
+      const indexRaw = await env.PORTFOLIO_MEDIA.get('portfolio-items');
+      const items = indexRaw ? JSON.parse(indexRaw) : [];
+      return new Response(JSON.stringify(items), {
+        headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      });
+    }
+
+    // Owner removes a previously uploaded item from admin.html
+    if (url.pathname === '/portfolio/delete' && request.method === 'POST') {
+      let body;
+      try {
+        body = await request.json();
+      } catch (err) {
+        return new Response(JSON.stringify({ error: 'invalid_json' }), {
+          status: 400,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (!env.ADMIN_PASSWORD || body.password !== env.ADMIN_PASSWORD) {
+        return new Response(JSON.stringify({ error: 'unauthorized' }), {
+          status: 401,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const id = String(body.id || '');
+      const indexRaw = await env.PORTFOLIO_MEDIA.get('portfolio-items');
+      const items = indexRaw ? JSON.parse(indexRaw) : [];
+      const remaining = items.filter(i => i.id !== id);
+      await env.PORTFOLIO_MEDIA.put('portfolio-items', JSON.stringify(remaining));
+      await env.PORTFOLIO_MEDIA.delete(`media:${id}`);
+
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Streams a stored photo/video back to the browser
+    if (url.pathname.startsWith('/media/') && request.method === 'GET') {
+      const id = url.pathname.slice('/media/'.length);
+      const { value, metadata } = await env.PORTFOLIO_MEDIA.getWithMetadata(`media:${id}`, 'arrayBuffer');
+      if (!value) {
+        return new Response('Not found', { status: 404 });
+      }
+      return new Response(value, {
+        headers: {
+          'Content-Type': (metadata && metadata.contentType) || 'application/octet-stream',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Access-Control-Allow-Origin': '*',
+        },
       });
     }
 

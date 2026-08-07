@@ -5,3 +5,7 @@ compatibility_date = "2024-11-01"
 [[kv_namespaces]]
 binding = "TESTIMONIALS"
 id = "639df725bfb242dc8c85fbe6281449b1"
+
+[[kv_namespaces]]
+binding = "PORTFOLIO_MEDIA"
+id = "6b158dffe5284360bb7053ac3fc0836c"
