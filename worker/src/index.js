@@ -1,4 +1,5 @@
 const ALLOWED_ORIGINS = [
+  'https://www.statussolucoes.com.br',
   'https://976467337.github.io',
   'http://localhost:8765',
 ];

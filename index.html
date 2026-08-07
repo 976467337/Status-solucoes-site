@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Status Soluções Integradas | Elétrica, Reformas e Energia Solar em São Paulo</title>
 <meta name="description" content="Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo. Orçamento sem compromisso pelo WhatsApp.">
-<link rel="canonical" href="https://976467337.github.io/Status-solucoes-site/">
+<link rel="canonical" href="https://www.statussolucoes.com.br/">
 <link rel="icon" type="image/png" href="images/logo.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:url" content="https://976467337.github.io/Status-solucoes-site/">
+<meta property="og:url" content="https://www.statussolucoes.com.br/">
 <meta property="og:title" content="Status Soluções Integradas | Elétrica, Reformas e Energia Solar em São Paulo">
 <meta property="og:description" content="Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo. Orçamento sem compromisso pelo WhatsApp.">
 <meta property="og:image" content="images/logo.png">
@@ -29,9 +29,9 @@
   "founder": "Anderson José dos Santos",
   "foundingDate": "2015",
   "description": "Instalações elétricas, reformas, energia solar e manutenção predial em toda a Grande São Paulo.",
-  "url": "https://976467337.github.io/Status-solucoes-site/",
-  "logo": "https://976467337.github.io/Status-solucoes-site/images/logo.png",
-  "image": "https://976467337.github.io/Status-solucoes-site/images/logo.png",
+  "url": "https://www.statussolucoes.com.br/",
+  "logo": "https://www.statussolucoes.com.br/images/logo.png",
+  "image": "https://www.statussolucoes.com.br/images/logo.png",
   "telephone": "+5511938019756",
   "areaServed": {
     "@type": "City",
@@ -177,6 +177,7 @@
 
   @media (max-width: 1080px){
     .navlinks{ display:none; }
+    .nav-cta{ display:none; }
     .menu-btn{ display:block; }
   }
 
@@ -377,7 +378,7 @@
 
   /* ---------- portfolio ---------- */
   .portfolio-grid{
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     grid-auto-rows: 220px; grid-auto-flow: dense; gap: 16px;
   }
   .port-card{
@@ -854,6 +855,7 @@
       <div class="service-tabs" id="portTabs" role="group" aria-label="Filtrar portfólio por área">
         <button class="tab active" data-filter="all" aria-pressed="true">Todos</button>
         <button class="tab" data-filter="solar" aria-pressed="false">Energia solar</button>
+        <button class="tab" data-filter="carregador" aria-pressed="false">Carregadores</button>
         <button class="tab" data-filter="residencial" aria-pressed="false">Residencial</button>
         <button class="tab" data-filter="comercial" aria-pressed="false">Comercial</button>
         <button class="tab" data-filter="predial" aria-pressed="false">Predial</button>
@@ -927,7 +929,7 @@
           <figcaption>Uniforme, capacetes e ferramentas da equipe Status</figcaption>
         </figure>
 
-        <figure class="port-card tall hud-frame" data-cat="solar">
+        <figure class="port-card tall hud-frame" data-cat="carregador">
           <img src="images/carregador-veiculo-eletrico-estacao-rapida.jpg" width="720" height="1600" alt="Estação rápida de recarga para veículos elétricos Kinsol CC 60kW" loading="lazy">
           <figcaption>Estação rápida de recarga para veículos elétricos — 60kW</figcaption>
         </figure>
