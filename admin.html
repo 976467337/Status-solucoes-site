@@ -20,10 +20,8 @@
   }
   h1,h2{ font-family:'Barlow Condensed','Arial Narrow',sans-serif; text-transform: uppercase; letter-spacing:0.02em; }
   .wrap{ width: 100%; max-width: 640px; }
-  .back-link{
-    display:inline-block; color: var(--muted); font-size: 0.85rem; text-decoration:none;
-    margin-bottom: 16px;
-  }
+  .top-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
+  .back-link{ color: var(--muted); font-size: 0.85rem; text-decoration:none; }
   .back-link:hover{ color: var(--volt); }
   .card{ background: var(--surface); border:1px solid var(--line); border-radius: 8px; padding: 32px; margin-bottom: 24px; }
   h1{ font-size: 1.6rem; margin-bottom: 6px; }
@@ -68,16 +66,16 @@
 <body>
 
 <div class="wrap">
-  <a class="back-link" href="index.html">← Voltar ao site</a>
+  <div class="top-row">
+    <a class="back-link" href="index.html">← Voltar ao site</a>
+    <a class="back-link" href="#" id="logoutLink">Sair</a>
+  </div>
 
   <div class="card">
     <h1>Postar foto ou vídeo</h1>
     <p class="sub">Área restrita da Status Soluções Integradas — o que você enviar aqui aparece automaticamente no portfólio do site.</p>
 
     <form id="uploadForm">
-      <label for="senha">Senha</label>
-      <input type="password" id="senha" required autocomplete="current-password">
-
       <label for="titulo">Título / legenda</label>
       <input type="text" id="titulo" placeholder="Ex: Instalação elétrica residencial em Cotia" required>
 
@@ -122,6 +120,19 @@
 
 <script>
   const API = 'https://status-depoimentos.rieres.workers.dev';
+  const SESSION_KEY = 'status_admin_pw';
+
+  // require login.html first — never show this page without a verified session
+  const sessionPassword = sessionStorage.getItem(SESSION_KEY);
+  if (!sessionPassword) {
+    window.location.href = 'login.html';
+  }
+
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.href = 'login.html';
+  });
 
   function fmtDate(ts){
     return new Date(ts).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
@@ -161,20 +172,18 @@
   }
 
   async function removeItem(id){
-    const senha = document.getElementById('senha').value || prompt('Digite a senha pra remover:');
-    if (!senha) return;
     if (!confirm('Remover este item do portfólio?')) return;
     try {
       const resp = await fetch(API + '/portfolio/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: senha, id }),
+        body: JSON.stringify({ password: sessionPassword, id }),
       });
       const data = await resp.json();
       if (data.ok) {
         loadItems();
       } else {
-        alert('Não foi possível remover (senha incorreta?).');
+        alert('Não foi possível remover.');
       }
     } catch (err) {
       alert('Erro ao remover. Tente novamente.');
@@ -201,7 +210,6 @@
     msg.className = 'msg';
     msg.textContent = '';
 
-    const senha = document.getElementById('senha').value;
     const titulo = document.getElementById('titulo').value;
     const categoria = document.getElementById('categoria').value;
     const arquivo = document.getElementById('arquivo').files[0];
@@ -214,7 +222,7 @@
     }
 
     const formData = new FormData();
-    formData.append('password', senha);
+    formData.append('password', sessionPassword);
     formData.append('titulo', titulo);
     formData.append('categoria', categoria);
     formData.append('arquivo', arquivo);
@@ -244,7 +252,7 @@
         loadItems();
       } else if (resp.status === 401) {
         msg.className = 'msg err';
-        msg.textContent = 'Senha incorreta.';
+        msg.textContent = 'Sessão expirada. Saia e entre de novo com a senha.';
       } else if (data.error === 'file_too_large') {
         msg.className = 'msg err';
         msg.textContent = 'Esse arquivo passa de 20MB.';

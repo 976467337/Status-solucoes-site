@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Status Soluções — Entrar</title>
+<link rel="icon" type="image/png" href="images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161A; --surface: #1B2126; --surface-2: #222A30; --line: #2E383F;
+    --text: #EDEFF1; --muted: #93A1AB; --volt: #2F8FE0; --neon: #4FE3D0;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  body{
+    background: var(--bg); color: var(--text); font-family:'Work Sans', 'Segoe UI', sans-serif;
+    min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 24px;
+    line-height: 1.5;
+  }
+  h1{ font-family:'Barlow Condensed','Arial Narrow',sans-serif; text-transform: uppercase; letter-spacing:0.02em; font-size: 1.6rem; margin-bottom: 6px; }
+  .wrap{ width: 100%; max-width: 380px; }
+  .card{ background: var(--surface); border:1px solid var(--line); border-radius: 8px; padding: 32px; }
+  .sub{ color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+  label{ display:block; font-size: 0.78rem; text-transform: uppercase; letter-spacing:0.05em; color: var(--muted); margin: 0 0 6px; }
+  input{
+    width: 100%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+    padding: 12px 14px; border-radius: 4px; font-family: inherit; font-size: 0.95rem;
+  }
+  input:focus{ outline:none; border-color: var(--volt); }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    background: var(--volt); color:#F5FAFF; border:none; border-radius:4px; padding: 14px;
+    font-weight:700; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.03em;
+    cursor:pointer; margin-top: 18px; font-family: inherit;
+  }
+  .btn:hover{ background:#57A8EE; }
+  .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .msg{ margin-top: 14px; padding: 10px 14px; border-radius: 4px; font-size: 0.85rem; display:none; }
+  .msg.err{ display:block; background: rgba(224,79,79,0.12); border:1px solid #E04F4F; color:#FF8B8B; }
+  .back-link{ display:inline-block; color: var(--muted); font-size: 0.85rem; text-decoration:none; margin-bottom: 16px; }
+  .back-link:hover{ color: var(--volt); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back-link" href="index.html">← Voltar ao site</a>
+  <div class="card">
+    <h1>Área restrita</h1>
+    <p class="sub">Digite a senha para acessar a área de fotos e vídeos.</p>
+    <form id="loginForm">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" required autocomplete="current-password" autofocus>
+      <button class="btn" id="loginBtn" type="submit">Entrar</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API = 'https://status-depoimentos.rieres.workers.dev';
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const msg = document.getElementById('msg');
+    const senha = document.getElementById('senha').value;
+    msg.className = 'msg';
+    msg.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Entrando…';
+
+    try {
+      const resp = await fetch(API + '/portfolio/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: senha }),
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        sessionStorage.setItem('status_admin_pw', senha);
+        window.location.href = 'admin.html';
+        return;
+      }
+      msg.className = 'msg err';
+      msg.textContent = 'Senha incorreta.';
+    } catch (err) {
+      msg.className = 'msg err';
+      msg.textContent = 'Erro de conexão. Tente novamente.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+    }
+  });
+</script>
+
+</body>
+</html>

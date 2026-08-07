@@ -134,6 +134,24 @@ export default {
       });
     }
 
+    // Checks the admin password without doing anything else — used by login.html
+    if (url.pathname === '/portfolio/auth' && request.method === 'POST') {
+      let body;
+      try {
+        body = await request.json();
+      } catch (err) {
+        return new Response(JSON.stringify({ ok: false }), {
+          status: 400,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+      const ok = !!env.ADMIN_PASSWORD && body.password === env.ADMIN_PASSWORD;
+      return new Response(JSON.stringify({ ok }), {
+        status: ok ? 200 : 401,
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Owner uploads a new portfolio photo/video from admin.html
     if (url.pathname === '/portfolio/upload' && request.method === 'POST') {
       let form;
