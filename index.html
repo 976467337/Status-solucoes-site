@@ -1280,6 +1280,24 @@
     document.querySelectorAll('a[href="#portfolio"]').forEach(a => a.classList.remove('hidden'));
   }
 
+  function updatePortfolioTabsVisibility(items){
+    const presentCategories = new Set(items.map(i => i.categoria));
+    document.querySelectorAll('#portTabs .tab').forEach(tab => {
+      const filter = tab.dataset.filter;
+      if (filter === 'all') return; // "Todos" fica sempre visível
+      const hasItems = presentCategories.has(filter);
+      tab.classList.toggle('hidden', !hasItems);
+      // se a categoria selecionada ficou sem itens, volta o filtro pra "Todos"
+      if (!hasItems && tab.classList.contains('active')) {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-pressed', 'false');
+        const allTab = document.querySelector('#portTabs .tab[data-filter="all"]');
+        allTab.classList.add('active');
+        allTab.setAttribute('aria-pressed', 'true');
+      }
+    });
+  }
+
   async function loadDynamicPortfolioItems(){
     const grid = document.getElementById('portGrid');
     if (!grid) return;
@@ -1309,6 +1327,7 @@
       }).join('');
 
       showPortfolioSection();
+      updatePortfolioTabsVisibility(items);
       applyPortfolioVisibility();
       bindPortfolioCardClicks();
     } catch (err) {
