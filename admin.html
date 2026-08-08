@@ -67,8 +67,7 @@
 
 <div class="wrap">
   <div class="top-row">
-    <a class="back-link" href="index.html">← Voltar ao site</a>
-    <a class="back-link" href="#" id="logoutLink">Sair</a>
+    <a class="back-link" href="index.html" id="backLink">← Voltar ao site</a>
   </div>
 
   <div class="card">
@@ -128,10 +127,10 @@
     window.location.href = 'login.html';
   }
 
-  document.getElementById('logoutLink').addEventListener('click', (e) => {
-    e.preventDefault();
+  // sai da area restrita sozinho ao voltar pro site (fechar a aba/janela
+  // ja limpa a sessao naturalmente, por ser sessionStorage)
+  document.getElementById('backLink').addEventListener('click', () => {
     sessionStorage.removeItem(SESSION_KEY);
-    window.location.href = 'login.html';
   });
 
   function fmtDate(ts){
