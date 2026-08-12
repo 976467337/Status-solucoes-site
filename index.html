@@ -1015,9 +1015,6 @@
           <label for="solar-nome">Nome</label>
           <input type="text" id="solar-nome" placeholder="Seu nome" required>
 
-          <label for="solar-whatsapp">WhatsApp</label>
-          <input type="tel" id="solar-whatsapp" placeholder="(11) 90000-0000" required>
-
           <label for="solar-cidade">Cidade / bairro</label>
           <input type="text" id="solar-cidade" placeholder="Ex: Cotia, Grande São Paulo">
 
@@ -1481,7 +1478,6 @@
       e.preventDefault();
 
       const nome = document.getElementById('solar-nome').value;
-      const whatsapp = document.getElementById('solar-whatsapp').value;
       const cidade = document.getElementById('solar-cidade').value;
       const consumo = Number(document.getElementById('solar-consumo').value);
       const telhado = document.getElementById('solar-telhado').value;
@@ -1505,7 +1501,7 @@
       document.getElementById('resultArea').textContent = '~' + Math.ceil(estimatedAreaM2) + ' m²';
       document.getElementById('resultGeracao').textContent = '~' + Math.round(estimatedMonthlyGeneration) + ' kWh/mês';
 
-      lastProject = { nome, whatsapp, cidade, consumo, telhado, area, panelCount, estimatedSystemKw, estimatedAreaM2, estimatedMonthlyGeneration };
+      lastProject = { nome, cidade, consumo, telhado, area, panelCount, estimatedSystemKw, estimatedAreaM2, estimatedMonthlyGeneration };
 
       stepForm.classList.add('hidden');
       stepResult.classList.remove('hidden');
@@ -1519,7 +1515,7 @@
     document.getElementById('solarSendBtn').addEventListener('click', () => {
       if (!lastProject) return;
       const p = lastProject;
-      const text = `Simulação de projeto de energia solar (site):\nNome: ${p.nome}\nWhatsApp: ${p.whatsapp}\nCidade/bairro: ${p.cidade || 'não informado'}\nConsumo médio informado: ${p.consumo} kWh/mês\nTipo de telhado: ${p.telhado}\nÁrea disponível informada: ${p.area || 'não informado'} m²\n\n--- Estimativa gerada pelo site ---\nPotência estimada do sistema: ${p.estimatedSystemKw.toFixed(2)} kWp\nQuantidade estimada de placas: ${p.panelCount} (painéis de 550W)\nÁrea aproximada necessária: ${Math.ceil(p.estimatedAreaM2)} m²\nGeração mensal estimada: ${Math.round(p.estimatedMonthlyGeneration)} kWh\n\n(Estimativa inicial para orientação, sujeita a validação técnica em visita — sem preços, pois cotamos com mais de um fornecedor)`;
+      const text = `Simulação de projeto de energia solar (site):\nNome: ${p.nome}\nCidade/bairro: ${p.cidade || 'não informado'}\nConsumo médio informado: ${p.consumo} kWh/mês\nTipo de telhado: ${p.telhado}\nÁrea disponível informada: ${p.area || 'não informado'} m²\n\n--- Estimativa gerada pelo site ---\nPotência estimada do sistema: ${p.estimatedSystemKw.toFixed(2)} kWp\nQuantidade estimada de placas: ${p.panelCount} (painéis de 550W)\nÁrea aproximada necessária: ${Math.ceil(p.estimatedAreaM2)} m²\nGeração mensal estimada: ${Math.round(p.estimatedMonthlyGeneration)} kWh\n\n(Estimativa inicial para orientação, sujeita a validação técnica em visita — sem preços, pois cotamos com mais de um fornecedor)`;
       const url = `https://api.whatsapp.com/send?phone=5511938019756&text=${encodeURIComponent(text)}`;
       trackWhatsAppClick('simulador_solar');
       window.open(url, '_blank');
