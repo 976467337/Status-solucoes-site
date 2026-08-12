@@ -367,7 +367,7 @@
     display:grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px;
   }
   .service-card{
-    position: relative;
+    position: relative; cursor: pointer;
     background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
     padding: 26px; transition: border-color .2s ease, transform .2s ease;
     display:flex; flex-direction:column; gap: 12px;
@@ -1240,6 +1240,21 @@
           card.classList.add('hidden');
         }
       });
+    });
+  });
+
+  // clicar num card de servico leva ao formulario de orcamento ja com
+  // o "Servico de interesse" pre-selecionado, so falta nome e detalhes
+  const servicoSelect = document.getElementById('servico');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const serviceName = card.querySelector('h3')?.textContent.trim();
+      if (serviceName && servicoSelect) {
+        const match = Array.from(servicoSelect.options).find(opt => opt.textContent.trim() === serviceName);
+        if (match) servicoSelect.value = match.value;
+      }
+      document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('nome')?.focus();
     });
   });
 
