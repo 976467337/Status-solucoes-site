@@ -547,6 +547,9 @@
   .contact-item .icon{ width:22px; height:22px; color: var(--volt); flex-shrink:0; margin-top:2px; }
   .contact-item b{ display:block; font-size: 0.78rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--muted); }
   .contact-item span{ font-family:'IBM Plex Mono',monospace; font-size: 0.98rem; }
+  .social-link-icon{ display:inline-block; margin-top: 8px; }
+  .social-link-icon .icon{ margin-top:0; transition: color .2s ease; }
+  .social-link-icon:hover .icon{ color: var(--neon); }
 
   form.quote{ display:flex; flex-direction:column; gap: 14px; }
   form.quote input, form.quote select, form.quote textarea{
@@ -1183,8 +1186,12 @@
           <div><b>Área de atendimento</b><span>Grande São Paulo</span></div>
         </div>
         <div class="contact-item">
-          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
-          <div><b>Redes sociais</b><span>Facebook @StatusSolucoesIntegradas</span></div>
+          <div>
+            <b>Redes sociais</b>
+            <a class="social-link-icon" href="https://www.facebook.com/Status-Solu%C3%A7%C3%B5es-Integradas-104485018200755" target="_blank" rel="noopener" aria-label="Facebook da Status Soluções Integradas">
+              <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>
