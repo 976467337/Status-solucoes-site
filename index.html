@@ -279,6 +279,14 @@
   }
   .hero-illustration{ width: 100%; height: auto; border-radius: 3px; margin-bottom: 18px; display:block; }
   .hero-panel .cap{ color: var(--muted); font-size: 0.85rem; font-family:'IBM Plex Mono', monospace; }
+  .solar-cta{
+    margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line);
+  }
+  .solar-cta p{
+    color: var(--text); font-family:'Work Sans',sans-serif; text-transform:none;
+    font-size: 0.92rem; margin-bottom: 14px; line-height: 1.5;
+  }
+  .solar-cta .btn{ width: 100%; }
 
   @media (max-width: 860px){
     .hero-grid{ grid-template-columns: 1fr; }
@@ -438,6 +446,51 @@
     .lightbox-nav{ width: 40px; height: 40px; font-size: 1.6rem; }
     .lightbox-prev{ left: 6px; }
     .lightbox-next{ right: 6px; }
+  }
+
+  /* ---------- solar project simulator ---------- */
+  .solar-modal{
+    display:none; position: fixed; inset: 0; z-index: 300;
+    background: rgba(9,11,14,0.96); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center; padding: 50px 20px;
+    overflow-y: auto;
+  }
+  .solar-modal.open{ display:flex; }
+  .solar-modal-box{
+    position: relative; width: 100%; max-width: 520px; margin: auto;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 36px;
+  }
+  .solar-modal-close{
+    position: absolute; top: 16px; right: 18px; background:none; border:none;
+    color: var(--text); font-size: 1.8rem; line-height:1; cursor:pointer;
+  }
+  .solar-modal-close:hover{ color: var(--neon); }
+  .solar-modal-box h3{ font-size: 1.5rem; margin: 8px 0 12px; }
+  .solar-modal-sub{
+    color: var(--muted); font-size: 0.9rem; margin-bottom: 20px;
+    text-transform:none; font-family:'Work Sans',sans-serif;
+  }
+  .solar-result-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0;
+  }
+  .solar-result-item{
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 16px;
+  }
+  .solar-result-item b{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size: 1.25rem;
+    color: var(--neon); margin-bottom: 4px;
+  }
+  .solar-result-item span{ color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing:0.03em; }
+  .solar-modal-box .hint{
+    color: var(--muted); font-size: 0.78rem; text-transform:none; font-family:'Work Sans',sans-serif;
+    margin-top: -8px;
+  }
+  .solar-disclaimer{
+    color: var(--muted); font-size: 0.82rem; text-transform:none; font-family:'Work Sans',sans-serif;
+    margin-bottom: 20px; line-height:1.5;
+  }
+  @media (max-width: 640px){
+    .solar-result-grid{ grid-template-columns: 1fr; }
   }
 
   /* ---------- testimonials ---------- */
@@ -711,6 +764,11 @@
           <line x1="0" y1="282" x2="480" y2="282" stroke="#2E383F" stroke-width="1.5"/>
         </svg>
         <span class="cap">Instalação fotovoltaica residencial — ilustração</span>
+
+        <div class="solar-cta">
+          <p><strong>Quer saber quantas placas sua casa precisa?</strong> Simule seu projeto de energia solar em menos de 1 minuto.</p>
+          <button class="btn btn-primary" id="openSolarSim" type="button">Montar meu projeto solar</button>
+        </div>
       </div>
     </div>
   </section>
@@ -943,6 +1001,60 @@
     <div class="lightbox-media" id="lightboxMedia"></div>
     <p class="lightbox-caption" id="lightboxCaption"></p>
     <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Próxima foto">›</button>
+  </div>
+
+  <div class="solar-modal" id="solarModal" role="dialog" aria-modal="true" aria-label="Simulador de projeto solar">
+    <div class="solar-modal-box">
+      <button class="solar-modal-close" id="solarModalClose" aria-label="Fechar">×</button>
+
+      <div id="solarStepForm">
+        <span class="eyebrow">Simulador</span>
+        <h3>Monte seu projeto de energia solar</h3>
+        <p class="solar-modal-sub">Preencha os dados abaixo — em segundos você vê uma estimativa de quantas placas e qual potência sua instalação vai precisar.</p>
+        <form class="quote" id="solarForm">
+          <label for="solar-nome">Nome</label>
+          <input type="text" id="solar-nome" placeholder="Seu nome" required>
+
+          <label for="solar-whatsapp">WhatsApp</label>
+          <input type="tel" id="solar-whatsapp" placeholder="(11) 90000-0000" required>
+
+          <label for="solar-cidade">Cidade / bairro</label>
+          <input type="text" id="solar-cidade" placeholder="Ex: Cotia, Grande São Paulo">
+
+          <label for="solar-consumo">Consumo médio mensal de energia (kWh)</label>
+          <input type="number" id="solar-consumo" min="1" placeholder="Ex: 350" required>
+          <p class="hint">Está na sua conta de luz, no campo "Consumo" em kWh.</p>
+
+          <label for="solar-telhado">Tipo de telhado</label>
+          <select id="solar-telhado">
+            <option value="Cerâmico">Cerâmico</option>
+            <option value="Fibrocimento">Fibrocimento</option>
+            <option value="Metálico">Metálico</option>
+            <option value="Laje">Laje</option>
+            <option value="Outro">Outro</option>
+          </select>
+
+          <label for="solar-area">Área aproximada disponível no telhado (m²) — opcional</label>
+          <input type="number" id="solar-area" min="0" placeholder="Ex: 40">
+
+          <button class="btn btn-primary" type="submit" style="margin-top:14px;">Calcular meu projeto</button>
+        </form>
+      </div>
+
+      <div id="solarStepResult" class="hidden">
+        <span class="eyebrow">Projeto estimado</span>
+        <h3>Seu panorama de energia solar</h3>
+        <div class="solar-result-grid">
+          <div class="solar-result-item"><b id="resultPotencia">—</b><span>Potência estimada</span></div>
+          <div class="solar-result-item"><b id="resultPlacas">—</b><span>Placas estimadas</span></div>
+          <div class="solar-result-item"><b id="resultArea">—</b><span>Área necessária</span></div>
+          <div class="solar-result-item"><b id="resultGeracao">—</b><span>Geração mensal estimada</span></div>
+        </div>
+        <p class="solar-disclaimer">Essa é uma estimativa inicial para orientação, sem compromisso — sem preços, porque cotamos com mais de um fornecedor pra te trazer a melhor condição. O projeto final é validado por um engenheiro responsável após visita técnica.</p>
+        <button class="btn btn-primary" id="solarSendBtn" type="button">Enviar projeto para a Status pelo WhatsApp</button>
+        <button class="btn btn-ghost" id="solarRedoBtn" type="button" style="margin-top:10px;">Refazer simulação</button>
+      </div>
+    </div>
   </div>
 
   <div class="wire-divider"></div>
@@ -1337,6 +1449,83 @@
   }
   loadDynamicPortfolioItems();
 
+  // ---------- solar project simulator ----------
+  (function initSolarSimulator(){
+    const modal = document.getElementById('solarModal');
+    const openBtn = document.getElementById('openSolarSim');
+    const closeBtn = document.getElementById('solarModalClose');
+    const form = document.getElementById('solarForm');
+    const stepForm = document.getElementById('solarStepForm');
+    const stepResult = document.getElementById('solarStepResult');
+    if (!modal || !openBtn) return;
+
+    let lastProject = null;
+
+    function openModal(){
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById('solar-nome').value;
+      const whatsapp = document.getElementById('solar-whatsapp').value;
+      const cidade = document.getElementById('solar-cidade').value;
+      const consumo = Number(document.getElementById('solar-consumo').value);
+      const telhado = document.getElementById('solar-telhado').value;
+      const area = document.getElementById('solar-area').value;
+
+      // constantes medias para a Grande Sao Paulo — estimativa inicial, nao substitui projeto tecnico
+      const PEAK_SUN_HOURS = 4.5;   // horas de sol pleno/dia
+      const PERFORMANCE_RATIO = 0.8; // perdas de inversor, fiacao, temperatura etc.
+      const PANEL_POWER_KW = 0.55;  // potencia de um painel padrao (550W)
+      const PANEL_AREA_M2 = 2.3;    // area aproximada por painel
+
+      const dailyConsumption = consumo / 30;
+      const systemSizeKw = dailyConsumption / (PEAK_SUN_HOURS * PERFORMANCE_RATIO);
+      const panelCount = Math.max(1, Math.ceil(systemSizeKw / PANEL_POWER_KW));
+      const estimatedSystemKw = panelCount * PANEL_POWER_KW;
+      const estimatedAreaM2 = panelCount * PANEL_AREA_M2;
+      const estimatedMonthlyGeneration = estimatedSystemKw * PEAK_SUN_HOURS * PERFORMANCE_RATIO * 30;
+
+      document.getElementById('resultPotencia').textContent = estimatedSystemKw.toFixed(2).replace('.', ',') + ' kWp';
+      document.getElementById('resultPlacas').textContent = panelCount + (panelCount === 1 ? ' placa' : ' placas');
+      document.getElementById('resultArea').textContent = '~' + Math.ceil(estimatedAreaM2) + ' m²';
+      document.getElementById('resultGeracao').textContent = '~' + Math.round(estimatedMonthlyGeneration) + ' kWh/mês';
+
+      lastProject = { nome, whatsapp, cidade, consumo, telhado, area, panelCount, estimatedSystemKw, estimatedAreaM2, estimatedMonthlyGeneration };
+
+      stepForm.classList.add('hidden');
+      stepResult.classList.remove('hidden');
+    });
+
+    document.getElementById('solarRedoBtn').addEventListener('click', () => {
+      stepResult.classList.add('hidden');
+      stepForm.classList.remove('hidden');
+    });
+
+    document.getElementById('solarSendBtn').addEventListener('click', () => {
+      if (!lastProject) return;
+      const p = lastProject;
+      const text = `Simulação de projeto de energia solar (site):\nNome: ${p.nome}\nWhatsApp: ${p.whatsapp}\nCidade/bairro: ${p.cidade || 'não informado'}\nConsumo médio informado: ${p.consumo} kWh/mês\nTipo de telhado: ${p.telhado}\nÁrea disponível informada: ${p.area || 'não informado'} m²\n\n--- Estimativa gerada pelo site ---\nPotência estimada do sistema: ${p.estimatedSystemKw.toFixed(2)} kWp\nQuantidade estimada de placas: ${p.panelCount} (painéis de 550W)\nÁrea aproximada necessária: ${Math.ceil(p.estimatedAreaM2)} m²\nGeração mensal estimada: ${Math.round(p.estimatedMonthlyGeneration)} kWh\n\n(Estimativa inicial para orientação, sujeita a validação técnica em visita — sem preços, pois cotamos com mais de um fornecedor)`;
+      const url = `https://api.whatsapp.com/send?phone=5511938019756&text=${encodeURIComponent(text)}`;
+      trackWhatsAppClick('simulador_solar');
+      window.open(url, '_blank');
+    });
+  })();
+
   // send quote form to WhatsApp
   function sendToWhatsApp(e){
     e.preventDefault();
@@ -1449,7 +1638,7 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!prefersReducedMotion) {
     const revealTargets = document.querySelectorAll(
-      '.section-head, .service-card, .port-card, .step, .contact-card, .pillar, form.quote:not(#testimonialForm)'
+      '.section-head, .service-card, .port-card, .step, .contact-card, .pillar, form.quote:not(#testimonialForm):not(#solarForm)'
     );
     revealTargets.forEach((el, i) => {
       el.classList.add('reveal');
